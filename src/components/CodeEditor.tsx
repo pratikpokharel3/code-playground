@@ -14,6 +14,7 @@ const CodeEditor = ({
   language,
   editorHeight,
   setCode,
+  // @ts-ignore
   executeCode
 }: EditorProps) => {
   const editorRef = useRef(null)
