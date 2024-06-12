@@ -13,7 +13,7 @@ A great place to test your code. 👍
 
 ## Built With
 
-- [React](https://vuejs.org/) + [Typescript](https://www.typescriptlang.org/) + [Monaco Editor (React)](https://www.npmjs.com/package/@monaco-editor/react) + [Tailwind CSS](https://tailwindcss.com/) + [Vite](https://vitejs.dev/)
+- [React](https://react.dev/) + [Typescript](https://www.typescriptlang.org/) + [Monaco Editor (React)](https://www.npmjs.com/package/@monaco-editor/react) + [Tailwind CSS](https://tailwindcss.com/) + [Vite](https://vitejs.dev/)
 
 (See `package.json` file for more information)
 
