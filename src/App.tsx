@@ -6,7 +6,7 @@ import Dropdown from "./components/Dropdown"
 import CodeEditor from "./components/CodeEditor"
 
 function App() {
-  const [isSmallScreen, setIsSmallScreen] = useState(false)
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 768)
   const [languageDropdown, setLanguageDropdown] = useState(false)
   const [selectedLanguage, setSelectedLanguage] = useState(languageList[0])
   const [sourceCode, setSourceCode] = useState<string | undefined>(

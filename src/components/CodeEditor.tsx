@@ -35,7 +35,6 @@ const CodeEditor = ({
       label: "Save File",
       keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
       run: function () {
-        // TOOD: Run code on edit
         // const code = editor.getValue()
         // executeCode()
       }

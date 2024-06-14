@@ -1,4 +1,4 @@
-# Code Playground | Made with React
+# Codiify | A Code Playground
 
 A great place to test your code. 👍
 
