@@ -2,11 +2,14 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    // colors: {
-    //   primary: "#dfdfdf"
-    // },
-    fontFamily: {
-      sans: ["Roboto", "sans-serif"]
+    extend: {
+      colors: {
+        primary: "#1e1e1e",
+        secondary: "#3c3c3c"
+      },
+      fontFamily: {
+        sans: ["Roboto", "sans-serif"]
+      }
     }
   },
   plugins: [require("@tailwindcss/forms")]

@@ -1,7 +1,7 @@
-import { useRef } from "react"
 import { Editor, OnMount } from "@monaco-editor/react"
 
 type EditorProps = {
+  editorRef: any
   language: string
   editorHeight: number
   code: string | undefined
@@ -12,21 +12,18 @@ type EditorProps = {
 const CodeEditor = ({
   code,
   language,
+  editorRef,
   editorHeight,
   setCode,
-  // @ts-ignore
   executeCode
 }: EditorProps) => {
-  const editorRef = useRef(null)
-
   const loader = (
-    <div className="mr-[13px] grid h-full w-full place-items-center border-r border-[#3c3c3c] text-sm text-white">
+    <div className="mr-[13px] grid h-full w-full place-items-center border-r border-secondary text-sm text-white">
       Loading...
     </div>
   )
 
   const onMount: OnMount = (editor, monaco) => {
-    // @ts-ignore
     editorRef.current = editor
     editor.focus()
 
@@ -35,8 +32,7 @@ const CodeEditor = ({
       label: "Save File",
       keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
       run: function () {
-        // const code = editor.getValue()
-        // executeCode()
+        executeCode()
       }
     })
   }
@@ -46,7 +42,7 @@ const CodeEditor = ({
       theme="vs-dark"
       value={code}
       loading={loader}
-      language={language !== "c++" ? language : "cpp"}
+      language={language}
       height={editorHeight}
       onMount={onMount}
       onChange={(value) => setCode(value)}

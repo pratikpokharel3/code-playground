@@ -7,14 +7,14 @@ type DropdownProps = React.ComponentPropsWithoutRef<"div"> & {
 }
 
 const Dropdown = ({
-  id = "",
+  id,
   children,
   toggle,
   selected,
   handleToggle
 }: DropdownProps) => {
   useEffect(() => {
-    const dropdown = document.getElementById(id)
+    const dropdown = document.getElementById(id!)
 
     const closeDropdown = (e: MouseEvent) => {
       // @ts-ignore
@@ -38,7 +38,7 @@ const Dropdown = ({
     <div id={id} className="relative">
       <button
         onClick={handleDropdown}
-        className="inline-flex w-32 cursor-default items-center justify-between gap-x-4 rounded-lg border border-[#3c3c3c] bg-[#1e1e1e] px-3 pb-2 pt-2.5 text-sm font-medium text-white focus:outline-none focus:ring-0"
+        className="border-secondary bg-primary inline-flex w-32 cursor-default items-center justify-between gap-x-4 rounded-lg border px-3 pb-2 pt-2.5 text-sm font-medium text-white focus:outline-none focus:ring-0"
       >
         {selected}
 
@@ -60,7 +60,7 @@ const Dropdown = ({
       </button>
 
       <div
-        className={`absolute z-10 border border-[#3c3c3c] bg-[#1e1e1e] ${toggle ? "block" : "hidden"}`}
+        className={`border-secondary bg-primary absolute z-10 border ${toggle ? "block" : "hidden"}`}
       >
         {children}
       </div>

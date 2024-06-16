@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { editor } from "monaco-editor"
 
 import { languageList } from "./languages"
 
@@ -10,24 +11,14 @@ function App() {
   const [languageDropdown, setLanguageDropdown] = useState(false)
   const [selectedLanguage, setSelectedLanguage] = useState(languageList[0])
   const [sourceCode, setSourceCode] = useState<string | undefined>(
-    `const todos = [
-    { id: 1, name: 'Learn JavaScript.', is_completed: true},
-    { id: 2, name: 'Learn TypeScript.', is_completed: false},
-    { id: 3, name: 'Create a basic todo app.', is_completed: true},
-    { id: 4, name: 'Learn React.', is_completed: false},
-]
-
-//Completed Todos
-todos.forEach(todo => {
-    if (todo.is_completed) {
-        console.log(todo.name)
-    }
-})`
+    languageList[0].content
   )
   const [editorHeight, setEditorHeight] = useState(window.innerHeight - 43 - 64)
   const [codeOutput, setCodeOutput] = useState<string[]>([])
   const [btnLoader, setBtnLoader] = useState(false)
   const [codeError, setCodeError] = useState(false)
+
+  const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null)
 
   useEffect(() => {
     window.addEventListener("resize", () => {
@@ -39,14 +30,24 @@ todos.forEach(todo => {
   function handleLanguage(language: string) {
     const idx = languageList.findIndex((lang) => lang.language === language)
 
-    setSelectedLanguage(languageList[idx])
     setLanguageDropdown(false)
+    setSelectedLanguage(languageList[idx])
+    setSourceCode(languageList[idx].content)
   }
 
   function executeCode() {
-    if (!sourceCode) return
+    const content = editorRef.current?.getValue()
+
+    if (!content) return
+
+    const language = languageList.find(
+      ({ language }) =>
+        language === editorRef.current?.getModel()?.getLanguageId()
+    )
 
     setBtnLoader(true)
+
+    setSelectedLanguage(language!)
 
     fetch("https://emkc.org/api/v2/piston/execute", {
       method: "POST",
@@ -55,10 +56,11 @@ todos.forEach(todo => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        ...selectedLanguage,
+        language: language?.alias,
+        version: language?.version,
         files: [
           {
-            content: sourceCode
+            content
           }
         ]
       })
@@ -103,7 +105,7 @@ todos.forEach(todo => {
         <div>
           <div
             id="github-section"
-            className="flex justify-center border-b border-[#3c3c3c] bg-[#1e1e1e] pb-2.5 pt-3"
+            className="border-secondary bg-primary flex justify-center border-b pb-2.5 pt-3"
           >
             <a
               target="_blank"
@@ -116,7 +118,7 @@ todos.forEach(todo => {
 
           <div className="grid grid-cols-12 gap-x-2">
             <div className="md:col-span-7 lg:col-span-6">
-              <div className="mr-[13px] flex items-center justify-between border-r border-[#3c3c3c] py-3 pl-7 pr-4 text-white">
+              <div className="border-secondary mr-[13px] flex items-center justify-between border-r py-3 pl-7 pr-4 text-white">
                 <div className="col-span-12 text-center text-xl font-semibold">
                   Codiify
                 </div>
@@ -126,19 +128,19 @@ todos.forEach(todo => {
                     id="language-dropdown"
                     toggle={languageDropdown}
                     selected={
-                      selectedLanguage.language[0].toUpperCase() +
-                      selectedLanguage.language.slice(1)
+                      selectedLanguage.alias[0].toUpperCase() +
+                      selectedLanguage.alias.slice(1)
                     }
                     handleToggle={setLanguageDropdown}
                   >
                     <div className="flex w-[126px] flex-col overflow-auto py-1">
-                      {languageList.map(({ language }) => (
+                      {languageList.map(({ alias, language }) => (
                         <div
                           className={`cursor-default px-5 py-1 text-sm hover:bg-gray-700 ${language === selectedLanguage.language ? "bg-gray-600" : ""}`.trimEnd()}
                           key={language}
                           onClick={() => handleLanguage(language)}
                         >
-                          {language[0].toUpperCase() + language.slice(1)}
+                          {alias[0].toUpperCase() + alias.slice(1)}
                         </div>
                       ))}
                     </div>
@@ -182,12 +184,13 @@ todos.forEach(todo => {
                 editorHeight={editorHeight}
                 setCode={setSourceCode}
                 executeCode={executeCode}
+                editorRef={editorRef}
               />
             </div>
 
             <div
               style={{ height: window.innerHeight - 43 }}
-              className={`overflow-auto border-l border-[#3c3c3c] px-4 py-6 text-sm md:col-span-5 lg:col-span-6 ${codeError ? "text-red-500" : "text-white"}`}
+              className={`border-secondary overflow-auto border-l px-4 py-6 text-sm md:col-span-5 lg:col-span-6 ${codeError ? "text-red-500" : "text-white"}`}
             >
               {codeOutput.length === 0 && (
                 <div className="text-gray-400">
